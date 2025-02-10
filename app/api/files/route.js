@@ -16,16 +16,14 @@ export async function GET() {
         });
 
         const files = resources.map(file => ({
-            public_id: file.public_id,      // Explicitly show public_id
-            name: file.public_id,           // Original name
+            public_id: file.public_id,      // ID yang digunakan untuk delete
+            name: file.filename,            // Nama original file
             url: file.secure_url,
             size: file.bytes,
             created: file.created_at,
             type: file.format,
             width: file.width,
-            height: file.height,
-            folder: file.folder,            // Added folder info
-            asset_id: file.asset_id         // Added unique asset id
+            height: file.height
         }));
 
         return NextResponse.json({

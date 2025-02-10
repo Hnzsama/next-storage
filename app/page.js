@@ -23,29 +23,25 @@ export default function Home() {
         "response": {
           "files": [
             {
-              "public_id": "folder/filename_xxxx",     // Use this ID for delete
-              "name": "folder/filename_xxxx",
-              "url": "https://res.cloudinary.com/your-cloud-name/image/upload/v1234567890/folder/filename_xxxx.jpg",
+              "public_id": "folder/filename_publicid",  // ID untuk delete
+              "name": "original_filename.jpg",
+              "url": "https://res.cloudinary.com/your-cloud-name/image/upload/v1234567890/folder/filename_publicid.jpg",
               "size": 123456,
               "created": "2024-01-01T00:00:00.000Z",
               "type": "jpg",
               "width": 800,
-              "height": 600,
-              "folder": "folder_name",
-              "asset_id": "asset_xxx123xxx"
+              "height": 600
             }
           ]
         },
-        "note": "Use public_id from list response for delete operation",
-        "error": {
-          "error": "Failed to list files: error message"
-        }
+        "note": "Use public_id for DELETE operations"
       },
       "delete": {
-        "endpoint": "DELETE /api/files/:cloudinary_public_id",
+        "endpoint": "DELETE /api/files/:public_id",
+        "example": "DELETE /api/files/folder/filename_publicid",
         "response": {
           "message": "File deleted successfully",
-          "filename": "cloudinary_public_id"
+          "filename": "folder/filename_publicid"
         },
         "error": {
           "error": "File not found or already deleted"
