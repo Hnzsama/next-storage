@@ -1,36 +1,40 @@
-import { readdir, stat } from 'fs/promises';
 import { NextResponse } from 'next/server';
-import path from 'path';
+import { v2 as cloudinary } from 'cloudinary';
 
-export async function GET(request) {
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
+export async function GET() {
     try {
-        const uploadDir = path.join(process.cwd(), 'public/uploads');
-        const files = await readdir(uploadDir);
-        const protocol = request.headers.get('x-forwarded-proto') || 'http';
-        const host = request.headers.get('host');
-        const baseUrl = `${protocol}://${host}`;
-        
-        const filesData = await Promise.all(
-            files.map(async (filename) => {
-                const filePath = path.join(uploadDir, filename);
-                const stats = await stat(filePath);
-                return {
-                    name: filename,
-                    url: `${baseUrl}/uploads/${filename}`,
-                    size: stats.size,
-                    created: stats.birthtime,
-                    modified: stats.mtime,
-                    type: path.extname(filename).slice(1)
-                };
-            })
-        );
+        const { resources } = await cloudinary.api.resources({
+            type: 'upload',
+            prefix: '',
+            max_results: 100
+        });
+
+        const files = resources.map(file => ({
+            public_id: file.public_id,      // Explicitly show public_id
+            name: file.public_id,           // Original name
+            url: file.secure_url,
+            size: file.bytes,
+            created: file.created_at,
+            type: file.format,
+            width: file.width,
+            height: file.height,
+            folder: file.folder,            // Added folder info
+            asset_id: file.asset_id         // Added unique asset id
+        }));
 
         return NextResponse.json({
-            files: filesData.sort((a, b) => b.created - a.created)
+            files: files
         });
     } catch (error) {
+        console.error('List files error:', error);
         return NextResponse.json(
-            { error: "Failed to list files" },
+            { error: "Failed to list files: " + error.message },
             { status: 500 }
         );
     }

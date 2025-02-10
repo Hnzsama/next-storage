@@ -9,11 +9,13 @@ export default function Home() {
         },
         "response": {
           "message": "Upload successful",
-          "filename": "uuid-example.jpg",
+          "filename": "cloudinary_public_id",
           "originalName": "example.jpg",
-          "url": "http://domain.com/uploads/uuid-example.jpg",
-          "relativeUrl": "/uploads/uuid-example.jpg",
+          "url": "https://res.cloudinary.com/your-cloud-name/image/upload/v1234567890/cloudinary_public_id.jpg",
           "size": 123456
+        },
+        "error": {
+          "error": "Upload failed: error message"
         }
       },
       "list": {
@@ -21,24 +23,32 @@ export default function Home() {
         "response": {
           "files": [
             {
-              "name": "uuid-example.jpg",
-              "url": "http://domain.com/uploads/uuid-example.jpg",
+              "public_id": "folder/filename_xxxx",     // Use this ID for delete
+              "name": "folder/filename_xxxx",
+              "url": "https://res.cloudinary.com/your-cloud-name/image/upload/v1234567890/folder/filename_xxxx.jpg",
               "size": 123456,
               "created": "2024-01-01T00:00:00.000Z",
-              "modified": "2024-01-01T00:00:00.000Z",
-              "type": "jpg"
+              "type": "jpg",
+              "width": 800,
+              "height": 600,
+              "folder": "folder_name",
+              "asset_id": "asset_xxx123xxx"
             }
           ]
+        },
+        "note": "Use public_id from list response for delete operation",
+        "error": {
+          "error": "Failed to list files: error message"
         }
       },
       "delete": {
-        "endpoint": "DELETE /api/files/:filename",
+        "endpoint": "DELETE /api/files/:cloudinary_public_id",
         "response": {
           "message": "File deleted successfully",
-          "filename": "uuid-example.jpg"
+          "filename": "cloudinary_public_id"
         },
         "error": {
-          "error": "File not found"
+          "error": "File not found or already deleted"
         }
       }
     }
